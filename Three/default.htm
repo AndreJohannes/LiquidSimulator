@@ -1,0 +1,33 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Volumetric Plot</title>
+</head>
+<body style="background-color: black;">
+    <script type="x-shader/x-vertex" name="basic" src="Shaders/vertex.js"></script>
+    <script type="x-shader/x-fragment" name="basic" src="Shaders/fragment.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/three.js"></script>
+    <script type="text/javascript" src="Scripts/trackballControls.js"></script>
+    <script type="text/javascript" src="Scripts/Helpers/ShaderLoader.js"></script>
+    <script type="text/javascript" src="Scripts/Helpers/TextureHandler.js"></script>
+    <script type="text/javascript" src="Scripts/Main.js"></script>
+    <link rel="stylesheet" href="styles/default.css" type="text/css" media="screen" />
+    <h1>Volumetric-Plot Demo</h1>
+    <div id="container">
+        <div id="canvas" />
+    </div>
+    <div id="info">
+        Volumetric Plotting
+    <br />
+        <br />
+        <span id="domainSize">Domain Size: 16^3</span>
+        <br />
+        <span >Frame Rate:</span>
+        <span id="fps">60</span>
+        <span>fps</span>
+    </div>
+</body>
+</html>

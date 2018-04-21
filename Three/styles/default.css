@@ -1,0 +1,19 @@
+﻿body {
+}
+
+div#canvas
+{
+ width: 600px;
+ height: 600px;
+ border-width: 1px;
+ border-style: solid;
+ border-color: dimgrey;
+ float: left;
+}
+
+div#info
+{
+    color: white;
+    float: left;
+    margin: 20px;
+}
