@@ -130,19 +130,36 @@ var Animation = (function () {
             tex.SetData.y(i, j - 1, k, value, m);
             tex.SetData.a(i, j - 1, k - 1, value, m);
         };
-        for(var i = 0; i <= N; i++) {
-            for(var j = 0; j <= N; j++) {
-                for(var k = 0; k <= N; k++) {
-                    var f = i / N - 0.02 * Math.sin(1 * Math.sqrt(j * j + k * k));
-                    SetData(i, j, k, Math.min(Math.max(255 * f, 0), 255));
-                    var normal = new THREE.Vector3(1 / N, -0.02 * Math.cos(1 * Math.sqrt(j * j + k * k)) * 1 * j / Math.sqrt(j * j + k * k), -0.02 * Math.cos(1 * Math.sqrt(j * j + k * k)) * 1 * k / Math.sqrt(j * j + k * k));
-                    normal.normalize();
-                    SetData(i, j, k, 255 * (-normal.x + 1) / 2, 1);
-                    SetData(i, j, k, 255 * (-normal.y + 1) / 2, 2);
-                    SetData(i, j, k, 255 * (-normal.z + 1) / 2, 3);
-                }
-            }
-        }
+        for (var i = 0; i <= N; i++) {
+              for (var j = 0; j <= N; j++) {
+                  for (var k = 0; k <= N; k++) {
+                      var normal = new THREE.Vector3(i - N / 2, j - N / 2, k - N / 2);
+                      SetData(i, j, k, Math.min(Math.max(255 * (1 - 4.4 * normal.length() / N), 0), 255));
+                      normal.normalize();
+                      SetData(i, j, k, 255 * (normal.x + 1) / 2, 1);
+                      SetData(i, j, k, 255 * (normal.y + 1) / 2, 2);
+                      SetData(i, j, k, 255 * (normal.z + 1) / 2, 3);
+                  }
+              }
+         }
+
+         for (var i = N/2+2; i <= N; i++) {
+             for (var j = 0; j <= N; j++) {
+                 for (var k = 0; k <= N; k++) {
+                     jj = j-N/2
+                     kk = k-N/2
+                     var f = (i-N/2.) / (N/2.) - 0.062*Math.sin(1*Math.sqrt(jj*jj+kk*kk));
+                     SetData(i, j, k, Math.min(Math.max(255 * f, 0), 255));
+                     var normal = new THREE.Vector3(1 / N,
+                        -0.02* Math.cos(1*Math.sqrt(jj * jj + kk * kk)) * 1*j / Math.sqrt(jj * jj + kk * kk),
+                        -0.02* Math.cos(1*Math.sqrt(jj * jj + kk * kk)) * 1*k / Math.sqrt(jj * jj + kk * kk));
+                     normal.normalize();
+                     SetData(i, j, k, 255 * (-normal.x + 1) / 2, 1);
+                     SetData(i, j, k, 255 * (-normal.y + 1) / 2, 2);
+                     SetData(i, j, k, 255 * (-normal.z + 1) / 2, 3);
+                 }
+             }
+         }
         var texture = new THREE.DataTexture(tex.GetTexture(), (N + 1) * 4, N * N, THREE.RGBAFormat, undefined, undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
         texture.needsUpdate = true;
         return texture;

@@ -46,9 +46,9 @@ struct voxelReturn{
 	bool trigger;
 };
 
-vol getVolumeDecode(vec3 pos, float side){ 
+vol getVolumeDecode(vec3 pos, float side){
 	pos=floor(pos);
-	vec2 pos2d = (inMatrix*vec4(pos,0.5)).xy;	
+	vec2 pos2d = (inMatrix*vec4(pos,0.5)).xy;
 	vol volume;
 	vec4 texture_1 = texture2D(volumeTexture,pos2d.xy);
 	texture_1 = (side<0.0)? 2.0*vec4(bias)-texture_1:texture_1;
@@ -66,13 +66,13 @@ vol getVolumeDecode(vec3 pos, float side){
 	float max_f = max(texture_1.x,max(texture_1.y,max(texture_1.z,texture_1.a)));
 	float max_b = max(texture_2.x,max(texture_2.y,max(texture_2.z,texture_2.a)));
 	volume.max=max(max_f,max_b);
-	return volume;	
+	return volume;
 }
 
 grad getGradientDecode(vec3 pos){
 	grad gradient;
     pos=floor(pos);
-	vec2 pos2d = (inMatrix*vec4(pos,1.5)).xy;	
+	vec2 pos2d = (inMatrix*vec4(pos,1.5)).xy;
 	vec4 tex=texture2D(volumeTexture,pos2d.xy);
     gradient.vertex_1.x=2.0*(tex.x-0.5);
     gradient.vertex_2.x=2.0*(tex.y-0.5);
@@ -116,14 +116,14 @@ float getFaceValue(vec3 relPos,vol volume,vec3 face,vec3 direction,float side){
 	vec3 posFace = step(0.0,side*direction)*face;
 	vec3 negFace = step(0.0,-side*direction)*face;
 	// For some very wiered reason the order of the following addition is absolutely neccessary
-	vec4 c = 
+	vec4 c =
 		 posFace.x * vec4(volume.vertex_1,volume.vertex_2,volume.vertex_3,volume.vertex_4);
 	c += negFace.x * vec4(volume.vertex_5,volume.vertex_6,volume.vertex_7,volume.vertex_8);
 	c += posFace.y * vec4(volume.vertex_1,volume.vertex_5,volume.vertex_3,volume.vertex_7);
 	c += negFace.y * vec4(volume.vertex_2,volume.vertex_6,volume.vertex_4,volume.vertex_8);
 	c += posFace.z * vec4(volume.vertex_1,volume.vertex_2,volume.vertex_5,volume.vertex_6);
 	c += negFace.z * vec4(volume.vertex_3,volume.vertex_4,volume.vertex_7,volume.vertex_8);
-	
+
 	vec2 relPos2d;
 	relPos2d.x = face.x * relPos.y;
 	relPos2d.x += face.y * relPos.x;
@@ -160,14 +160,14 @@ vec3 getGradient(vec3 relPos,grad gradient){
 	vec3 coeff_6 = gradient.vertex_6-gradient.vertex_5;
 	vec3 coeff_7 = gradient.vertex_7-gradient.vertex_5;
 	vec3 coeff_8 = gradient.vertex_5-gradient.vertex_6-gradient.vertex_7+gradient.vertex_8;
- 	
+
  	vec3 retGrad = coeff_1*(1.0-relPos.x) + coeff_5*relPos.x
 				+ (coeff_2*(1.0-relPos.x) + coeff_6*relPos.x) * relPos.y
 				+ (coeff_3*(1.0-relPos.x) + coeff_7*relPos.x) * relPos.z
 				+ (coeff_4*(1.0-relPos.x) + coeff_8*relPos.x) * relPos.y * relPos.z;
-	
+
 	//return retGrad;
-	return normalize(retGrad);			
+	return normalize(retGrad);
 }
 
 vec3 getProjection(vec3 direction){
@@ -175,13 +175,13 @@ vec3 getProjection(vec3 direction){
 }
 
 float getLighting(vec3 normal,vec3 direction){
-	
+
 	return  (
-		  0.0  
+		  0.0
 		+ 0.0 * dot(normalize(normal), normalize(lightDirection))
-		+ 1.9 * dot(reflect(normalize(lightDirection),normalize(normal)), normalize(direction) ) 
+		+ 1.9 * dot(reflect(normalize(lightDirection),normalize(normal)), normalize(direction) )
 		);
-	
+
 }
 
 voxelReturn marchVoxel(float t_next,
@@ -189,7 +189,7 @@ voxelReturn marchVoxel(float t_next,
 			 vec3 currentCube,
 			 vec3 currentFace,
 			 vec3 nextLevels,
-			 vec3 entryPoint, 
+			 vec3 entryPoint,
 			 vec3 increment,
 			 vec3 projection,
 			 vec3 direction
@@ -204,8 +204,8 @@ voxelReturn marchVoxel(float t_next,
 	vec3 relPos = mix(entryRelPos , exitRelPos , clamp( 0.0 , 1.0, (bias - entryValue) / (exitValue - entryValue) ));
 	voxelReturn vox;
 	vox.trigger = ((max(entryValue,exitValue)>=bias));// && (bias>=min(entryValue,exitValue)));
-	vox.gradient = getGradient(relPos,getGradientDecode(currentCube)); 
-	vox.position = relPos+currentCube;	
+	vox.gradient = getGradient(relPos,getGradientDecode(currentCube));
+	vox.position = relPos+currentCube;
 	return vox;
 }
 
@@ -219,7 +219,7 @@ void main( ) {
 	vec3 entryPoint = (trMatrix*vec4(vUv.x,vUv.y,0,1.0)).xyz;
 	vec3 exitPlanes = step(0.0,direction)*N;
 	vec3 t_exitPlanes = projection*(exitPlanes-entryPoint);
-	float t_exit = min(t_exitPlanes.x,min(t_exitPlanes.y,t_exitPlanes.z));		
+	float t_exit = min(t_exitPlanes.x,min(t_exitPlanes.y,t_exitPlanes.z));
 	vec3 increment = 2.0*step(0.0,direction)-vec3(1.0,1.0,1.0);
 	vec3 onset = vec3(trMatrix[0][3],trMatrix[1][3],trMatrix[2][3]);
 	vec3 currentCube = floor(entryPoint-step(1.0,-onset));
@@ -229,7 +229,7 @@ void main( ) {
 	vec4 color = vec4(1.0,1.0,1.0,1.0);
 	float filter = 0.0;
 	float transitions =0.0;
-	
+
 	vol currentVolume = getVolumeDecode(currentCube,side);
 	if(currentVolume.max >= bias){
 		float entryValue=getFaceValue(entryPoint-currentCube,currentVolume,currentFace,direction,side);
@@ -240,11 +240,11 @@ void main( ) {
 			exitPlanes = step(0.0,direction)*N;
 			t_exitPlanes = projection*(exitPlanes-entryPoint);
 			t_exit = min(t_exitPlanes.x,min(t_exitPlanes.y,t_exitPlanes.z));
-			increment = 2.0*step(0.0,direction)-vec3(1.0,1.0,1.0);	
-			//color += step(0.0,side)*getLighting(vox.gradient); 
+			increment = 2.0*step(0.0,direction)-vec3(1.0,1.0,1.0);
+			//color += step(0.0,side)*getLighting(vox.gradient);
 			color=vec4(0.5,0.4,1.0,1.0);
 			n=1.0/n;side =- side; transitions++;
-		}	
+		}
 	}
 
 	for(int i=0 ; i!=-1 ; i++){
@@ -259,7 +259,7 @@ void main( ) {
 					vec3 preDirection =  refract(direction,side*vox.gradient,n) ;
 					if(preDirection==vec3(0.0)){
 						direction = normalize(reflect(direction,side*vox.gradient));
-					}else{ 
+					}else{
 						direction =normalize(preDirection) ;
 						n=1.0/n;side =- side,transitions++;
 					}
@@ -273,7 +273,7 @@ void main( ) {
 				}
 				else{
 					n=1.0/n;side =- side; transitions++;
-				}	
+				}
 				}
 			}
 
@@ -289,8 +289,7 @@ void main( ) {
 			color *= getExitTexture(pos,currentFace);
 			break;}
 
-	}	
+	}
 
 	gl_FragColor =  color + 0.2*filter*vec4(1.0);
 }
-
