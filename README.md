@@ -19,7 +19,9 @@ The *fragment shader* program in this project traces the rays passing
 through the 3D lattice and calculated the refraction of the rays when
 crossing gas-liquid interfaces.
 
-
+The front end of this project was written in *typescript* which is
+powerful superset of *javascript*. The shaders were coded in the
+openGL shading language.
 
 ## Image
 <img src = './Images/screenshot_01.png' >
